@@ -434,21 +434,6 @@ public:
 		}
 	}
 
-	void drawImdDepth(cv::Mat &img, int y, vector<double> &z_buffer)
-	{
-		for (int x = 0; x < z_buffer.size(); x++)
-		{
-			// img.at<uchar>(y, x) = 255;
-			if (z_buffer[x] == -1)
-				img.at<uchar>(height - y - 1, x) = 0;
-			else
-				img.at<uchar>(height - y - 1, x) = int((z_buffer[x]) / (maxZ - minZ) * 180 + 20);
-			dd[y].push_back(z_buffer[x]);
-			// dd[y].push_back(int((z_buffer[x]) / 125.0 * 255));
-		}
-
-	}
-
 	void render() {
 		imgDepth = cv::Mat::zeros(cv::Size(width, height), CV_8UC1);
 		mat = cv::Mat::zeros(cv::Size(width, height), CV_8UC3);
