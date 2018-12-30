@@ -40,6 +40,7 @@ public:
 	cv::Mat mat;
 	cv::Mat imgDepth;
 	Vertex3f center;
+	double scaleRate = 1.0f;
 	double minX = FLT_MAX;
 	double maxX = -FLT_MAX;
 	double minY = FLT_MAX;
@@ -66,7 +67,7 @@ public:
 
 	void setColor() {
 		int face_num = faces.size();
-		Color light = Color(4, 0, 4);
+		Color light = Color(3, 0, 3);
 		Vertex3f light_vertex = Vertex3f(width / 2, height / 2, maxZ + 5 * (maxZ - minZ));
 
 		for (Face &face : faces) {
@@ -100,16 +101,50 @@ public:
 
 	void change(char action)
 	{
+		switch (action)
+		{
+		case 'w':
+			rotate('w');
+			break;
+		case 's':
+			rotate('s');
+			break;
+		case 'a':
+			rotate('a');
+			break;
+		case 'd':
+			rotate('d');
+			break;
+		case 'q':
+			rotate('q');
+			break;
+		case 'e':
+			rotate('e');
+			break;
+		case 'z':
+			scaleRate *= 1.1f;
+			makeScale(scaleRate);
+			break;
+		case 'c':
+			scaleRate *= 0.9f;
+			makeScale(scaleRate);
+			break;
+		default:
+			break;
+		}
 
 	}
 
 	void makeScale()
 	{
-		makeScale(1.0);
+		makeScale(scaleRate);
 	}
 
 	void makeScale(double rate)
 	{
+		if (rate > 1.4f)
+			rate = 1.4f;
+		scaleRate = rate;
 		center.x = (maxX + minX) / 2.0;
 		center.y = (maxY + minY) / 2.0;
 		center.z = (maxZ + minZ) / 2.0;
@@ -117,7 +152,7 @@ public:
 		double dis_y = maxY - minY;
 		double dis_z = maxZ - minZ;
 
-		double scale = min(height, width) / max(max(dis_x, dis_y), dis_z) * 2/ 3;
+		double scale = min(height, width) / max(max(dis_x, dis_y), dis_z) * 2 / 3;
 		// scale = 5;
 		scale *= rate;
 		for (Face &face : faces)
@@ -129,10 +164,10 @@ public:
 				v.z = (v.z - center.z) * scale;
 			}
 		}
-		minX = (minX - center.x) * scale;
-		maxX = (maxX - center.x) * scale;
-		minY = (minY - center.y) * scale;
-		maxY = (maxY - center.y) * scale;
+		minX = (minX - center.x) * scale + width / 2;
+		maxX = (maxX - center.x) * scale + width / 2;
+		minY = (minY - center.y) * scale + height / 2;
+		maxY = (maxY - center.y) * scale + height / 2;
 		minZ = (minZ - center.z) * scale;
 		maxZ = (maxZ - center.z) * scale;
 		center = Vertex3f(width / 2, height / 2, 0);

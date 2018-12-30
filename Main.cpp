@@ -59,21 +59,9 @@ int main(int argc, const char** argv)
 			exit(0);
 			break;
 		}
-		else if (key == 'w')
+		else
 		{
-			obj.rotate('w');
-		}
-		else if (key == 's')
-		{
-			obj.rotate('s');
-		}
-		else if (key == 'a')
-		{
-			obj.rotate('a');
-		}
-		else if (key == 'd')
-		{
-			obj.rotate('d');
+			obj.change(key);
 		}
 		obj.render();
 		imshow(window_name1, obj.imgDepth);
