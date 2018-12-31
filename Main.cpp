@@ -5,8 +5,8 @@
 #include <fstream>
 #include "vector"
 
-#include "Obj.cpp"
 #include "MetaClass.h"
+#include "Obj.cpp"
 
 using namespace std;
 using namespace cv;
@@ -28,26 +28,18 @@ int main(int argc, const char** argv)
 
 	Obj obj;
 	obj.setFrameSize(800, 600);
-	filename = string("models/teapot.obj");
-	filename = string("models/teapot_origin.obj");
-	filename = string("models/dolphinsk.obj");
-	filename = string("models/duck.obj");
-	filename = string("models/desk.obj");
-	filename = string("models/through.obj");
-	filename = string("models/soccer_ball.obj");
-	filename = string("models/non_convex.obj");
-	filename = string("models/venus.obj");
-	filename = string("models/Tables.obj");
-	filename = string("models/desk.obj");
-	filename = string("models/cube2.obj");
-	filename = string("models/cube.obj");
-	filename = string("models/cube3.obj");
-	filename = string("models/tables2.obj");
-	filename = string("models/cat.obj");
-	obj.load(filename);
+	int state = obj.load(filename);
+	if (!state)
+	{
+		cout << "[File Wrong]: " << filename <<  " open wrong!" << endl;
+		system("pause");
+		return 0;
+	}
 	obj.makeScale();
 	obj.render();
+	namedWindow(window_name1);
 	imshow(window_name1, obj.imgDepth);
+	int a = 50;
 	imshow(window_name2, obj.mat);
 
 	while (1)

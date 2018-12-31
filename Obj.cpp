@@ -3,8 +3,6 @@
 #include "opencv2/imgproc.hpp"
 #include "iostream"
 #include "fstream"
-#include "string"
-#include "queue"
 #include "vector"
 #include "set"
 
@@ -47,14 +45,11 @@ public:
 	double maxY = -FLT_MAX;
 	double minZ = FLT_MAX;
 	double maxZ = -FLT_MAX;
-	vector<vector<int>> dd;
 	set<int> InOrOut;
 	vector<Face> faces;
-	// vector<vector<Poly>> PT;
 	vector<Poly> PT;
 	vector<vector<Edge>> ET;
 	vector<Edge> AET;
-	vector<Poly> IPT;
 
 	void setFrameSize(int w, int h)
 	{
@@ -62,11 +57,9 @@ public:
 		width = w + 1;
 		mat = cv::Mat::zeros(cv::Size(width, height), CV_8UC3);
 		imgDepth = cv::Mat::zeros(cv::Size(width, height), CV_8UC1);
-		dd.resize(height);
 	}
 
 	void setColor() {
-		int face_num = faces.size();
 		Color light = Color(3, 0, 3);
 		Vertex3f light_vertex = Vertex3f(width / 2, height / 2, maxZ + 5 * (maxZ - minZ));
 
@@ -142,8 +135,8 @@ public:
 
 	void makeScale(double rate)
 	{
-		if (rate > 1.4f)
-			rate = 1.4f;
+		if (rate > 1.45f)
+			rate = 1.45f;
 		scaleRate = rate;
 		center.x = (maxX + minX) / 2.0;
 		center.y = (maxY + minY) / 2.0;
@@ -152,7 +145,7 @@ public:
 		double dis_y = maxY - minY;
 		double dis_z = maxZ - minZ;
 
-		double scale = min(height, width) / max(max(dis_x, dis_y), dis_z) * 2 / 3;
+		double scale = min(height, width) / (max(max(dis_x, dis_y), dis_z) * 1.414f) * 2 / 3;
 		// scale = 5;
 		scale *= rate;
 		for (Face &face : faces)
@@ -175,7 +168,7 @@ public:
 
 	void rotate(char direction)
 	{
-		const float PI = 3.1415926;
+		double PI = 3.1415926;
 		double dtheta = PI / 64;
 		double Rot[3][3] = { 0 };
 		switch (direction) {
@@ -217,22 +210,16 @@ public:
 		maxY = -FLT_MAX;
 		minZ = FLT_MAX;
 		maxZ = -FLT_MAX;
-		for (auto &face : faces) {
-			Vector3f normal_before = face.normal;
-			face.normal.x = Rot[0][0] * normal_before.x + Rot[0][1] * normal_before.y +
-				Rot[0][2] * normal_before.z;
-			face.normal.y = Rot[1][0] * normal_before.x + Rot[1][1] * normal_before.y +
-				Rot[1][2] * normal_before.z;
-			face.normal.z = Rot[2][0] * normal_before.x + Rot[2][1] * normal_before.y +
-				Rot[2][2] * normal_before.z;
-			for (auto &vertex : face.vertexes) {
-				RotateAxes(vertex, Rot, center);
-				minX = min(minX, vertex.x);
-				maxX = max(maxX, vertex.x);
-				minY = min(minY, vertex.y);
-				maxY = max(maxY, vertex.y);
-				minZ = min(minZ, vertex.z);
-				maxZ = max(maxZ, vertex.z);
+		for (Face &face : faces) {
+			face.normal.leftDot(Rot);
+			for (Vertex3f &v : face.vertexes) {
+				RotateAxes(v, Rot, center);
+				minX = min(minX, v.x);
+				maxX = max(maxX, v.x);
+				minY = min(minY, v.y);
+				maxY = max(maxY, v.y);
+				minZ = min(minZ, v.z);
+				maxZ = max(maxZ, v.z);
 			}
 		}
 	}
@@ -250,9 +237,11 @@ public:
 		}
 	}
 
-	void load(string filename)
+	int load(string filename)
 	{
 		ifstream file(filename);
+		if (!file.is_open())
+			return 0;
 		string type;
 		vector<Vertex3f> vertexes;
 
@@ -339,6 +328,7 @@ public:
 				}
 			}
 		}
+		return 1;
 	}
 
 	int getClosestPoly(int x, int y)
@@ -491,7 +481,7 @@ public:
 			{
 				changeInOrOut(e1.polyIndex);
 				e2 = *it;
-				calImg(e1.x + 0.5, e2.x + 0.5, y, z_buffer);
+				calImg((int)(e1.x + 0.5), (int)(e2.x + 0.5), y, z_buffer);
 				e1 = e2;
 			}
 		}
@@ -509,7 +499,7 @@ public:
 			double poly_ymax = -FLT_MAX;
 			double poly_ymin = FLT_MAX;
 			Poly poly;
-			poly.faceIndex = face - faces.begin();
+			poly.faceIndex = (int)(face - faces.begin());
 			poly.a = (*face).normal.x;
 			poly.b = (*face).normal.y;
 			poly.c = (*face).normal.z;
