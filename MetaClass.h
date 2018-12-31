@@ -71,6 +71,16 @@ inline Vector3f Cross(const Vector3f &u, const Vector3f &v) {
 		u.x * v.y - u.y * v.x);
 }
 
+inline void RotateAxes(Vector3f &v, const double Rot[3][3], Vector3f &center) {
+	Vector3f v_base_zero;
+	v_base_zero.x = v.x - center.x;
+	v_base_zero.y = v.y - center.y;
+	v_base_zero.z = v.z - center.z;
+	v.x = Rot[0][0] * v_base_zero.x + Rot[0][1] * v_base_zero.y + Rot[0][2] * v_base_zero.z + center.x;
+	v.y = Rot[1][0] * v_base_zero.x + Rot[1][1] * v_base_zero.y + Rot[1][2] * v_base_zero.z + center.y;
+	v.z = Rot[2][0] * v_base_zero.x + Rot[2][1] * v_base_zero.y + Rot[2][2] * v_base_zero.z + center.z;
+}
+
 typedef Vector3f Vertex3f;
 typedef Vertex3f Normal;
 

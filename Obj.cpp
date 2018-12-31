@@ -176,8 +176,8 @@ public:
 	void rotate(char direction)
 	{
 		const float PI = 3.1415926;
-		float dtheta = PI / 30;
-		float Rot[3][3] = { 0 };
+		double dtheta = PI / 64;
+		double Rot[3][3] = { 0 };
 		switch (direction) {
 		case 'a':
 			dtheta = -dtheta;
@@ -196,6 +196,16 @@ public:
 			Rot[1][2] = -sin(dtheta);
 			Rot[2][1] = sin(dtheta);
 			Rot[2][2] = cos(dtheta);
+			break;
+		case 'q':
+			dtheta = -dtheta;
+		case 'e':
+			dtheta = -dtheta;
+			Rot[2][2] = 1;
+			Rot[0][0] = cos(dtheta);
+			Rot[0][1] = -sin(dtheta);
+			Rot[1][0] = sin(dtheta);
+			Rot[1][1] = cos(dtheta);
 			break;
 		default:
 			break;
@@ -216,16 +226,7 @@ public:
 			face.normal.z = Rot[2][0] * normal_before.x + Rot[2][1] * normal_before.y +
 				Rot[2][2] * normal_before.z;
 			for (auto &vertex : face.vertexes) {
-				Vertex3f pt_without_center;
-				pt_without_center.x = vertex.x - center.x;
-				pt_without_center.y = vertex.y - center.y;
-				pt_without_center.z = vertex.z - center.z;
-				vertex.x = Rot[0][0] * pt_without_center.x + Rot[0][1] *
-					pt_without_center.y + Rot[0][2] * pt_without_center.z + center.x;
-				vertex.y = Rot[1][0] * pt_without_center.x + Rot[1][1] *
-					pt_without_center.y + Rot[1][2] * pt_without_center.z + center.y;
-				vertex.z = Rot[2][0] * pt_without_center.x + Rot[2][1] *
-					pt_without_center.y + Rot[2][2] * pt_without_center.z + center.z;
+				RotateAxes(vertex, Rot, center);
 				minX = min(minX, vertex.x);
 				maxX = max(maxX, vertex.x);
 				minY = min(minY, vertex.y);
