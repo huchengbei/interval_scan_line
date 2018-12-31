@@ -22,24 +22,6 @@ public:
 	}
 };
 
-class Vector2f {
-public:
-	double x, y;
-	Vector2f() : x(0.0), y(0.0) {};
-
-	Vector2f(double x, double y)
-	{
-		this->x = x;
-		this->y = y;
-	}
-
-	inline Vector2f operator = (const Vector2f &v)
-	{
-		x = v.x;
-		y = v.y;
-		return *this;
-	}
-};
 class Color {
 public:
 	double r, g, b;
