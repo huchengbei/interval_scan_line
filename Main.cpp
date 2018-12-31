@@ -39,7 +39,6 @@ int main(int argc, const char** argv)
 	obj.render();
 	namedWindow(window_name1);
 	imshow(window_name1, obj.imgDepth);
-	int a = 50;
 	imshow(window_name2, obj.mat);
 
 	while (1)
