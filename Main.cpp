@@ -1,8 +1,8 @@
-#include <opencv2/core.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/imgproc.hpp>
-#include <iostream>
-#include <fstream>
+#include "opencv2/core.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/imgproc.hpp"
+#include "iostream"
+#include "fstream"
 #include "vector"
 
 #include "MetaClass.h"
@@ -198,12 +198,6 @@ int main(int argc, const char** argv)
 	}
 	string filename(argv[1]);
 
-	namedWindow(window_name1);
-	namedWindow(window_name2);
-	initButton(buttons);
-	setMouseCallback(window_name1, onMouse, &buttons);
-	setMouseCallback(window_name2, onMouse, &buttons);
-
 	obj.setFrameSize(800, 600);
 	int state = obj.load(filename);
 	if (!state)
@@ -212,6 +206,13 @@ int main(int argc, const char** argv)
 		system("pause");
 		return 0;
 	}
+
+	namedWindow(window_name1);
+	namedWindow(window_name2);
+	initButton(buttons);
+	setMouseCallback(window_name1, onMouse, &buttons);
+	setMouseCallback(window_name2, onMouse, &buttons);
+
 	cout << "Interval Scan Line" << endl;
 	cout << "Control Key Map: Or you can click the button" << endl;
 	cout << "¡û: left rotate\n¡ú: right rotate" << endl;
