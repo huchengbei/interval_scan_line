@@ -66,11 +66,11 @@ void calImg(x1, x2, y, z_buffer)
 |2|cat|5506|2755|
 |3|cube|6|8|
 |4|flowers|4061|7608|
-|4|nonconvex|1|9|
-|4|planes|2|6|
-|5|teapot|2464|1292|
-|6|torusknot|2880|1440|
-|7|venus|69664|34834|
+|5|nonconvex|1|9|
+|6|planes|2|6|
+|7|teapot|2464|1292|
+|8|torusknot|2880|1440|
+|9|venus|69664|34834|
 
 ## 效果
 ![](./pics/console_panel.png)
