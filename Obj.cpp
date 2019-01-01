@@ -35,7 +35,7 @@ class Obj
 {
 public:
 	int height, width;
-	cv::Mat mat;
+	cv::Mat img;
 	cv::Mat imgDepth;
 	Vertex3f center;
 	double scaleRate = 1.0f;
@@ -50,12 +50,20 @@ public:
 	vector<Poly> PT;
 	vector<vector<Edge>> ET;
 	vector<Edge> AET;
+	constexpr static int LEFT = 0;
+	constexpr static int RIGHT = 1;
+	constexpr static int UP = 2;
+	constexpr static int DOWN = 3;
+	constexpr static int ANTI_CLOCK= 4;
+	constexpr static int CLOCK = 5;
+	constexpr static int ENLARGE = 6;
+	constexpr static int REDUCE = 7;
 
 	void setFrameSize(int w, int h)
 	{
 		height = h + 1;
 		width = w + 1;
-		mat = cv::Mat::zeros(cv::Size(width, height), CV_8UC3);
+		img = cv::Mat::zeros(cv::Size(width, height), CV_8UC3);
 		imgDepth = cv::Mat::zeros(cv::Size(width, height), CV_8UC1);
 	}
 
@@ -92,33 +100,23 @@ public:
 		}
 	}
 
-	void change(char action)
+	void change(int action)
 	{
 		switch (action)
 		{
-		case 'w':
-			rotate('w');
+		case LEFT:
+		case RIGHT:
+		case UP:
+		case DOWN:
+		case ANTI_CLOCK:
+		case CLOCK:
+			rotate(action);
 			break;
-		case 's':
-			rotate('s');
-			break;
-		case 'a':
-			rotate('a');
-			break;
-		case 'd':
-			rotate('d');
-			break;
-		case 'q':
-			rotate('q');
-			break;
-		case 'e':
-			rotate('e');
-			break;
-		case 'z':
+		case ENLARGE:
 			scaleRate *= 1.1f;
 			makeScale(scaleRate);
 			break;
-		case 'c':
+		case REDUCE:
 			scaleRate *= 0.9f;
 			makeScale(scaleRate);
 			break;
@@ -166,33 +164,33 @@ public:
 		center = Vertex3f(width / 2, height / 2, 0);
 	}
 
-	void rotate(char direction)
+	void rotate(int direction)
 	{
 		double PI = 3.1415926;
 		double dtheta = PI / 64;
 		double Rot[3][3] = { 0 };
 		switch (direction) {
-		case 'a':
+		case LEFT:
 			dtheta = -dtheta;
-		case 'd':
+		case RIGHT:
 			Rot[1][1] = 1;
 			Rot[0][0] = cos(dtheta);
 			Rot[0][2] = sin(dtheta);
 			Rot[2][0] = -sin(dtheta);
 			Rot[2][2] = cos(dtheta);
 			break;
-		case 'w':
+		case UP:
 			dtheta = -dtheta;
-		case 's':
+		case DOWN:
 			Rot[0][0] = 1;
 			Rot[1][1] = cos(dtheta);
 			Rot[1][2] = -sin(dtheta);
 			Rot[2][1] = sin(dtheta);
 			Rot[2][2] = cos(dtheta);
 			break;
-		case 'q':
+		case ANTI_CLOCK:
 			dtheta = -dtheta;
-		case 'e':
+		case CLOCK:
 			dtheta = -dtheta;
 			Rot[2][2] = 1;
 			Rot[0][0] = cos(dtheta);
@@ -417,7 +415,7 @@ public:
 			}
 			z_buffer[x1] = max(z_buffer[x1], old_z);
 			Color &color = faces[p.faceIndex].color;
-			cv::line(mat,cv::Point(x1, height - y - 1), cv::Point(x2, height - y - 1),cv::Scalar(color.r, color.g, color.b));
+			cv::line(img,cv::Point(x1, height - y - 1), cv::Point(x2, height - y - 1),cv::Scalar(color.r, color.g, color.b));
 			
 		}
 		else
@@ -440,7 +438,7 @@ public:
 			}
 			z_buffer[x1] = max(z_buffer[x1], old_z);
 			Color color = faces[p.faceIndex].color;
-			cv::line(mat,cv::Point(x1, height - y - 1), cv::Point(middle_x, height - y - 1),cv::Scalar(color.r, color.g, color.b));
+			cv::line(img,cv::Point(x1, height - y - 1), cv::Point(middle_x, height - y - 1),cv::Scalar(color.r, color.g, color.b));
 			old_z = z_buffer[x2];
 			if (std::abs(q.c) <= 1.0e-3f)
 				z_buffer[x2] = getVerticalPolyDepth(index_right, x2, y) - minZ;
@@ -452,7 +450,7 @@ public:
 			}
 			z_buffer[x2] = max(z_buffer[x2], old_z);
 			color = faces[q.faceIndex].color;
-			cv::line(mat,cv::Point(middle_x, height - y - 1), cv::Point(x2, height - y - 1),cv::Scalar(color.r, color.g, color.b));
+			cv::line(img,cv::Point(middle_x, height - y - 1), cv::Point(x2, height - y - 1),cv::Scalar(color.r, color.g, color.b));
 		}
 		for (int x = x1; x <= x2; x++)
 		{
@@ -462,7 +460,7 @@ public:
 
 	void render() {
 		imgDepth = cv::Mat::zeros(cv::Size(width, height), CV_8UC1);
-		mat = cv::Mat::zeros(cv::Size(width, height), CV_8UC3);
+		img = cv::Mat::zeros(cv::Size(width, height), CV_8UC3);
 		setColor();
 		vector<double> z_buffer;
 		Edge e1, e2;
