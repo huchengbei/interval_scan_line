@@ -220,6 +220,7 @@ int main(int argc, const char** argv)
 	cout << "Pgup: anti-clock rotate \nPgdn: clock rotate" << endl;
 	cout << "m: enlarge \nn: reduce" << endl;
 	cout << "ESC: quit" << endl;
+	cout << "FACEs: " << obj.numOfFace << "\tVERTEXs: " << obj.numOfVertex << endl;
 	obj.makeScale();
 	obj.render();
 	showImg();

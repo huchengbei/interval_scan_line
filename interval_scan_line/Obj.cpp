@@ -35,6 +35,7 @@ class Obj
 {
 public:
 	int height, width;
+	int numOfVertex = 0, numOfFace = 0;
 	cv::Mat img;
 	cv::Mat imgDepth;
 	Vertex3f center;
@@ -250,6 +251,7 @@ public:
 				Vertex3f v;
 				file >> v.x >> v.y >> v.z;
 				vertexes.push_back(v);
+				numOfVertex++;
 
 				minX = min(minX, v.x);
 				maxX = max(maxX, v.x);
@@ -323,6 +325,7 @@ public:
 					face.normal = Normalize(normal);
 
 					faces.push_back(face);
+					numOfFace++;
 				}
 			}
 		}
