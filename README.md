@@ -37,7 +37,7 @@ interval_scan_line example.obj
 
 若项目在VS中无法生成，尝试右击项目，重定向项目
 
-另确保path里包含opencv_world400d.dll及opencv_world400.dll
+另确保环境变量path里包含opencv_world400d.dll及opencv_world400.dll所在目录，或者这两个文件与程序同目录，否则无法运行。
 
 ## 算法过程
 ```
