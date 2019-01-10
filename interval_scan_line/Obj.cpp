@@ -5,6 +5,7 @@
 #include "fstream"
 #include "vector"
 #include "set"
+#include "ctime"
 
 #include "MetaClass.h"
 using namespace std;
@@ -46,6 +47,8 @@ public:
 	double maxY = -FLT_MAX;
 	double minZ = FLT_MAX;
 	double maxZ = -FLT_MAX;
+	double load_time = 0;
+	double render_time = 0;
 	set<int> InOrOut;
 	vector<Face> faces;
 	vector<Poly> PT;
@@ -238,6 +241,7 @@ public:
 
 	int load(string filename)
 	{
+		clock_t start = clock();
 		ifstream file(filename);
 		if (!file.is_open())
 			return 0;
@@ -329,6 +333,8 @@ public:
 				}
 			}
 		}
+		clock_t end = clock();
+		load_time = (double)(end - start) / CLOCKS_PER_SEC;
 		return 1;
 	}
 
@@ -462,6 +468,7 @@ public:
 	}
 
 	void render() {
+		clock_t start = clock();
 		imgDepth = cv::Mat::zeros(cv::Size(width, height), CV_8UC1);
 		img = cv::Mat::zeros(cv::Size(width, height), CV_8UC3);
 		setColor();
@@ -486,6 +493,8 @@ public:
 				e1 = e2;
 			}
 		}
+		clock_t end = clock();
+		render_time = (double)(end - start) / CLOCKS_PER_SEC;
 	};
 
 	void buildPTAndET() {
