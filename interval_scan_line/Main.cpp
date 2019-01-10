@@ -96,6 +96,20 @@ void drawButton(Mat &img, vector<Button> &buttons)
 	putText(img, "made by HQ", point, font, 0.6, white);
 }
 
+void drawTime(Mat &img, double load_time, double render_time)
+{
+	auto font = FONT_HERSHEY_SIMPLEX;
+	auto white = Scalar(255, 255, 255);
+	char load_str[100];
+	char render_str[100];
+	sprintf_s(load_str, "LOAD Time: %.0fms", load_time * 1000);
+	sprintf_s(render_str, "RENDER Time: %.0fms", render_time * 1000);
+	Point point = Point(25, 135);
+	putText(img, load_str, point, font, 0.6, white);
+	point = Point(25, 165);
+	putText(img, render_str, point, font, 0.6, white);
+
+}
 void showImg()
 {
 	Mat img = obj.img;
@@ -103,6 +117,8 @@ void showImg()
 	initButtonState();
 	drawButton(img, buttons);
 	drawButton(imgDepth, buttons);
+	drawTime(img, obj.load_time, obj.render_time);
+	drawTime(imgDepth, obj.load_time, obj.render_time);
 	imshow(window_name1, imgDepth);
 	imshow(window_name2, img);
 }
