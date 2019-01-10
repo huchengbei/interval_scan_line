@@ -69,17 +69,17 @@ void calImg(x1, x2, y, z_buffer)
 ## 使用模型
 使用的部分模型数据如下表：
 
-|No|Name|Faces|Vertex|
-|---|:---|---|---|
-|1|bunny|69664|34834|
-|2|cat|5506|2755|
-|3|cube|6|8|
-|4|flowers|4061|7608|
-|5|nonconvex|1|9|
-|6|planes|2|6|
-|7|teapot|2464|1292|
-|8|torusknot|2880|1440|
-|9|venus|69664|34834|
+|No|Name|Faces|Vertex|Load Time(ms)|Render Time(ms)|
+|---|:---|---|---|---|---|
+|1|bunny|69664|34834|289|289|
+|2|cat|5506|2755|58|31|
+|3|cube|6|8|2|3|
+|4|flowers|4061|7608|147|65|
+|5|nonconvex|1|9|2|1|
+|6|planes|2|6|1|0|
+|7|teapot|2464|1292|50|17|
+|8|torusknot|2880|1440|349|27|
+|9|venus|69664|34834|541|86|
 
 ## 效果
 ![](./pics/console_panel.png)
